@@ -8,7 +8,7 @@ import org.tripmonkey.mongo.data.WorkspaceDB;
 import org.tripmonkey.mongo.mapper.WorkspacePatchMapper;
 import org.tripmonkey.patch.data.Status;
 import org.tripmonkey.patch.data.WorkspacePatch;
-import org.tripmonkey.proto.ProtoSerde;
+import org.tripmonkey.proto.domain.ProtoMapper;
 import org.tripmonkey.mongo.repo.WorkspaceRepository;
 import org.tripmonkey.workspace.service.PatchApplier;
 
@@ -22,7 +22,7 @@ public class PatchService implements PatchApplier {
     @Override
     @RunOnVirtualThread
     public Uni<Status> apply(WorkspacePatch request) {
-        return Uni.createFrom().item(ProtoSerde.workspacePatchMapper.deserialize(request))
+        return Uni.createFrom().item(ProtoMapper.workspacePatchMapper.deserialize(request))
                 .log(String.format("Received patch for workspace %s.", request.getWorkspaceId()))
                 .map(WorkspacePatchMapper::from)
                 .log("Deserialized patch.")
