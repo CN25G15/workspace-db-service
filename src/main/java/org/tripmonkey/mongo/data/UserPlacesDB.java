@@ -1,15 +1,14 @@
 package org.tripmonkey.mongo.data;
 
 import io.quarkus.mongodb.panache.common.MongoEntity;
-import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import java.util.List;
 
 @MongoEntity(collection = "userdata",database = "tripmonkey")
 public class UserPlacesDB {
 
-    @BsonProperty UserDB user;
-    @BsonProperty List<PlaceDB> places;
+    UserDB user;
+    List<PlaceDB> places;
 
     public UserDB getUser() {
         return user;
