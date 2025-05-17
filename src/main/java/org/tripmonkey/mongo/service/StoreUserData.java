@@ -9,7 +9,7 @@ import org.tripmonkey.mongo.data.UserDB;
 import org.tripmonkey.mongo.mapper.GeometryMapper;
 import org.tripmonkey.mongo.repo.UserDataRepository;
 import org.tripmonkey.patch.data.Status;
-import org.tripmonkey.proto.domain.ProtoMapper;
+import org.tripmonkey.proto.map.ProtoMapper;
 
 public class StoreUserData implements PersistUserData {
 

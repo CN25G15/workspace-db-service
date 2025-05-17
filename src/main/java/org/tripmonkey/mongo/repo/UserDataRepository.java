@@ -6,6 +6,8 @@ import org.tripmonkey.mongo.data.PlaceDB;
 import org.tripmonkey.mongo.data.UserDB;
 import org.tripmonkey.mongo.data.UserPlacesDB;
 
+import java.util.List;
+
 @ApplicationScoped
 public class UserDataRepository implements PanacheMongoRepository<UserPlacesDB> {
 
@@ -14,9 +16,16 @@ public class UserDataRepository implements PanacheMongoRepository<UserPlacesDB> 
     }
 
     public void dump(UserDB user, PlaceDB place) {
-        UserPlacesDB db = find("user.id", user.getId()).firstResult();
-        db.getPlace().add(place);
-        persist(db);
+        UserPlacesDB db = find("user", user).firstResult();
+        if(db != null) {
+            db.getPlace().add(place);
+            update(db);
+        } else {
+            db = UserPlacesDB.from(user, List.of(place));
+            persist(db);
+        }
+
+
     }
 
 }

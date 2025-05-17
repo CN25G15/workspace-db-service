@@ -6,7 +6,7 @@ import jakarta.inject.Inject;
 import org.tripmonkey.database.service.CreateWorkspace;
 import org.tripmonkey.mongo.mapper.WorkspaceMapper;
 import org.tripmonkey.mongo.repo.WorkspaceRepository;
-import org.tripmonkey.proto.domain.ProtoMapper;
+import org.tripmonkey.proto.map.ProtoMapper;
 import org.tripmonkey.workspace.service.Workspace;
 import org.tripmonkey.workspace.service.WorkspaceResponse;
 

@@ -7,7 +7,7 @@ import jakarta.inject.Inject;
 import org.jboss.logging.Logger;
 import org.tripmonkey.database.service.FetchWorkspace;
 import org.tripmonkey.mongo.mapper.WorkspaceMapper;
-import org.tripmonkey.proto.domain.ProtoMapper;
+import org.tripmonkey.proto.map.ProtoMapper;
 import org.tripmonkey.mongo.repo.WorkspaceRepository;
 import org.tripmonkey.workspace.service.WorkspaceRequest;
 import org.tripmonkey.workspace.service.WorkspaceResponse;

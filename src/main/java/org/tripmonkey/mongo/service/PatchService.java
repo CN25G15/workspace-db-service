@@ -4,17 +4,18 @@ import io.quarkus.grpc.GrpcService;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
+import org.tripmonkey.database.service.PatchPersister;
 import org.tripmonkey.mongo.data.WorkspaceDB;
 import org.tripmonkey.mongo.mapper.WorkspacePatchMapper;
 import org.tripmonkey.patch.data.Status;
 import org.tripmonkey.patch.data.WorkspacePatch;
-import org.tripmonkey.proto.domain.ProtoMapper;
+import org.tripmonkey.proto.map.ProtoMapper;
 import org.tripmonkey.mongo.repo.WorkspaceRepository;
 import org.tripmonkey.workspace.service.PatchApplier;
 
 
 @GrpcService
-public class PatchService implements PatchApplier {
+public class PatchService implements PatchPersister {
 
     @Inject
     WorkspaceRepository wrkp;
@@ -31,8 +32,9 @@ public class PatchService implements PatchApplier {
                     if(wdb == null) {
                         throw new RuntimeException("Workspace doesn't exist in the database");
                     }
+                    wdb.getHistory().forEach(workspacePatchDB -> System.out.println(workspacePatchDB.getValue().toString()));
                     wdb.getHistory().add(workspacePatch);
-                    wrkp.persist(wdb);
+                    wrkp.update(wdb);
                     return Status.newBuilder().setStatus(200).build();
                 }).log("Successfully persisted patch.")
                 .onFailure().recoverWithItem(throwable ->

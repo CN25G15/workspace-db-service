@@ -8,8 +8,13 @@ import org.tripmonkey.mongo.data.WorkspaceDB;
 @ApplicationScoped
 public class WorkspaceRepository implements PanacheMongoRepository<WorkspaceDB> {
 
+
+
     public WorkspaceDB findById(String wid){
         return find("wid", wid).firstResult();
     }
+
+
+
 
 }
