@@ -1,6 +1,8 @@
 package org.tripmonkey.mongo.data;
 
 import io.quarkus.mongodb.panache.common.MongoEntity;
+import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 
 import java.util.List;
@@ -8,10 +10,12 @@ import java.util.List;
 @MongoEntity(collection = "workspaces",database = "tripmonkey")
 public class WorkspaceDB {
 
-    public ObjectId id;
-    public String wid;
-    public List<String> users;
-    public List<WorkspacePatchDB> history;
+     public ObjectId id;
+     public String wid;
+     public List<String> users;
+     public List<WorkspacePatchDB> history;
+
+     public WorkspaceDB() {}
 
     public String getWorkspaceId() {
         return wid;

@@ -34,8 +34,9 @@ public class FetchService implements FetchWorkspace {
                 })
                 
                 .onItem()
-                .transform(workspaceDB -> WorkspaceMapper.from(workspaceDB))
+                .transform(WorkspaceMapper::from)
                 .map(ProtoMapper.workspaceMapper::serialize)
-                .map(workspace -> WorkspaceResponse.newBuilder().setWorkspace(workspace).build());
+                .map(workspace -> WorkspaceResponse.newBuilder().setWorkspace(workspace).build())
+                .onFailure().invoke(throwable -> log.errorf("\n\nFailed with %s\n\n",throwable.getMessage()));
     }
 }

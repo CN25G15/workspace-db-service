@@ -1,6 +1,8 @@
 package org.tripmonkey.mongo.data;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.tripmonkey.rest.domain.data.CommentDTO;
 import org.tripmonkey.rest.domain.data.LocationDTO;
@@ -18,18 +20,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@RegisterForReflection
 public class ValueDB implements UserView, CommentView,
         LocationView, LocationListView, LocationMetadataView {
 
-    @BsonProperty String comment;
-    @BsonProperty String place_id;
-    @BsonProperty String name;
-    @BsonProperty List<String> locations;
-    @BsonProperty String description;
-    @BsonProperty List<String> tags;
-    @BsonProperty String user_id;
+    @BsonProperty public String comment;
+    @BsonProperty public String place_id;
+    @BsonProperty public String name;
+    @BsonProperty public List<String> locations;
+    @BsonProperty public String description;
+    @BsonProperty public List<String> tags;
+    @BsonProperty public String user_id;
 
-    @BsonCreator
+    public ValueDB(){}
+
     public static ValueDB from(
             @BsonProperty String comment,
             @BsonProperty String place_id,
@@ -50,61 +54,72 @@ public class ValueDB implements UserView, CommentView,
         return vdb;
     }
 
+    @BsonIgnore
     @Override
     public CommentDTO asComment() {
         return CommentDTO.from(comment);
     }
 
+    @BsonIgnore
     @Override
     public boolean isComment() {
         return comment != null && place_id == null && name == null && locations == null && description == null
                 && tags == null && user_id == null;
     }
 
+    @BsonIgnore
     @Override
     public LocationListDTO asLocationList() {
         return LocationListDTO.fromStringList(name, locations);
     }
 
+    @BsonIgnore
     @Override
     public boolean isLocationList() {
         return comment == null && place_id == null && name != null && locations != null && description == null
                 && tags == null && user_id == null;
     }
 
+    @BsonIgnore
     @Override
     public LocationMetadataDTO asLocationMetadata() {
         return LocationMetadataDTO.from(description,tags);
     }
 
+    @BsonIgnore
     @Override
     public boolean isLocationMetadata() {
         return comment == null && place_id == null && name == null && locations == null && description != null
                 && tags != null && user_id == null;
     }
 
+    @BsonIgnore
     @Override
     public LocationDTO asLocation() {
         return LocationDTO.from(place_id);
     }
 
+    @BsonIgnore
     @Override
     public boolean isLocation() {
         return comment == null && place_id != null && name == null && locations == null && description == null
                 && tags == null && user_id == null;
     }
 
+    @BsonIgnore
     @Override
     public Optional<UserDTO> asUser() {
         return UserDTO.from(user_id);
     }
 
+    @BsonIgnore
     @Override
     public boolean isUser() {
         return comment == null && place_id == null && name == null && locations == null && description == null
                 && tags == null && user_id != null;
     }
 
+    @BsonIgnore
     public ValueType getType(){
         if(isComment())
             return ValueType.COMMENT;
@@ -142,6 +157,7 @@ public class ValueDB implements UserView, CommentView,
         return from(null,null,null,null,null,null,user.toString());
     }
 
+    @BsonIgnore
     public String toString() {
         StringBuilder stb = new StringBuilder().append("{");
         switch (getType()) {

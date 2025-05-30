@@ -4,6 +4,7 @@ import io.quarkus.grpc.GrpcService;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
+import org.jboss.logging.Logger;
 import org.tripmonkey.database.service.PatchPersister;
 import org.tripmonkey.mongo.data.WorkspaceDB;
 import org.tripmonkey.mongo.mapper.WorkspacePatchMapper;
@@ -18,6 +19,9 @@ import org.tripmonkey.workspace.service.PatchApplier;
 public class PatchService implements PatchPersister {
 
     @Inject
+    Logger log;
+
+    @Inject
     WorkspaceRepository wrkp;
 
     @Override
@@ -28,18 +32,18 @@ public class PatchService implements PatchPersister {
                 .map(WorkspacePatchMapper::from)
                 .log("Deserialized patch.")
                 .map(workspacePatch -> {
-                WorkspaceDB wdb = wrkp.findById(workspacePatch.getWid());
+                WorkspaceDB wdb = wrkp.findById(workspacePatch.wid);
                     if(wdb == null) {
                         throw new RuntimeException("Workspace doesn't exist in the database");
                     }
-                    wdb.getHistory().forEach(workspacePatchDB -> System.out.println(workspacePatchDB.getValue().toString()));
+                    wdb.getHistory().forEach(workspacePatchDB -> System.out.println(workspacePatchDB.value.toString()));
                     wdb.getHistory().add(workspacePatch);
                     wrkp.update(wdb);
                     return Status.newBuilder().setStatus(200).build();
                 }).log("Successfully persisted patch.")
                 .onFailure().recoverWithItem(throwable ->
                         Status.newBuilder().setStatus(500).setMessage(throwable.getMessage()).build())
-                .log("Persistence unsuccessful.");
+                .onFailure().invoke(throwable ->  log.errorf("Persistence unsuccessful.", throwable));
 
     }
 }

@@ -1,6 +1,7 @@
 package org.tripmonkey.mongo.service;
 
 import io.quarkus.grpc.GrpcService;
+import io.smallrye.common.annotation.RunOnVirtualThread;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import org.tripmonkey.database.service.CreateWorkspace;
@@ -17,6 +18,7 @@ public class CreateService implements CreateWorkspace {
     WorkspaceRepository wrkp;
 
     @Override
+    @RunOnVirtualThread
     public Uni<WorkspaceResponse> create(Workspace request) {
         return Uni.createFrom().item(request)
                 .log(String.format("Persisting workspace with id %s", request.getWid()))

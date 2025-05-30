@@ -25,18 +25,18 @@ public class WorkspacePatchMapper {
     }
 
     public static PatchVisitor from(WorkspacePatchDB wpdb) {
-        return switch(wpdb.getValue().getType()){
+        return switch(wpdb.value.getType()){
             case INVALID -> null;
-            case COMMENT -> new CommentPatch(wpdb.getWid(), wpdb.getUserId(),
-                    Op.forValue(wpdb.getOp()), PathNode.from(wpdb.getPath()), wpdb.getValue().asComment());
-            case LOCATION -> new LocationPatch(wpdb.getWid(), wpdb.getUserId(),
-                    Op.forValue(wpdb.getOp()), PathNode.from(wpdb.getPath()), wpdb.getValue().asLocation());
-            case LOC_LIST -> new LocationListPatch(wpdb.getWid(), wpdb.getUserId(),
-                    Op.forValue(wpdb.getOp()), PathNode.from(wpdb.getPath()), wpdb.getValue().asLocationList());
-            case LOC_META -> new LocationMetadataPatch(wpdb.getWid(), wpdb.getUserId(),
-                    Op.forValue(wpdb.getOp()), PathNode.from(wpdb.getPath()), wpdb.getValue().asLocationMetadata());
-            case USER -> wpdb.getValue().asUser().map(userDTO -> new UserPatch(wpdb.getWid(), wpdb.getUserId(),
-                    Op.forValue(wpdb.getOp()), PathNode.from(wpdb.getPath()), userDTO)).orElse(null) ;
+            case COMMENT -> new CommentPatch(wpdb.wid, wpdb.user_id,
+                    Op.forValue(wpdb.op), PathNode.from(wpdb.path), wpdb.value.asComment());
+            case LOCATION -> new LocationPatch(wpdb.wid, wpdb.user_id,
+                    Op.forValue(wpdb.op), PathNode.from(wpdb.path), wpdb.value.asLocation());
+            case LOC_LIST -> new LocationListPatch(wpdb.wid, wpdb.user_id,
+                    Op.forValue(wpdb.op), PathNode.from(wpdb.path), wpdb.value.asLocationList());
+            case LOC_META -> new LocationMetadataPatch(wpdb.wid, wpdb.user_id,
+                    Op.forValue(wpdb.op), PathNode.from(wpdb.path), wpdb.value.asLocationMetadata());
+            case USER -> wpdb.value.asUser().map(userDTO -> new UserPatch(wpdb.wid, wpdb.user_id,
+                    Op.forValue(wpdb.op), PathNode.from(wpdb.path), userDTO)).orElse(null) ;
         };
     }
 }
