@@ -1,5 +1,8 @@
 package org.tripmonkey.mongo.service;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.Message;
+import com.google.protobuf.util.JsonFormat;
 import io.quarkus.grpc.GrpcService;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 import io.smallrye.mutiny.Uni;
@@ -22,11 +25,22 @@ public class FetchService implements FetchWorkspace {
     @Inject
     WorkspaceRepository wrkp;
 
+    private String print(Message m) {
+        String s = "";
+        try{
+            s = JsonFormat.printer().print(m);
+        } catch (InvalidProtocolBufferException e) {
+        }
+        return s;
+    }
+
     @Override
     @RunOnVirtualThread
     public Uni<WorkspaceResponse> fetch(WorkspaceRequest request) {
         return Uni.createFrom().item(request).map(WorkspaceRequest::getWid)
+                .invoke(() -> log.info(print(request)))
                 .map(wrkp::findById)
+                .invoke(workspaceDB -> log.infof("Workspace %s exists: %s", request.getWid(), workspaceDB != null))
                 .onItem().ifNull().failWith(() -> new RuntimeException("Workspace for given Id doesn't exist"))
                 .onItem().ifNotNull()
                 .invoke(workspaceDB -> {
